@@ -54,19 +54,62 @@
 
 <script>
 import home from './views/Home'
+import { request } from './util/Request'
+import { Notification } from './util/PageAct'
+import i18n from './i18n/I18nString'
+
 export default {
   name: 'app',
   components: {
     home
   },
+  mounted () {
+    this.initMock()
+  },
   data () {
     return {
-      mockStat: 1
+      mockStat: 1,
+      notf: new Notification(this)
     }
   },
   methods: {
+    initMock () {
+      let opt = {
+        url: '/mock/conf',
+        method: 'post',
+        dataType: 'form',
+        params: { method: 'getMockStatus' },
+        success (dom, resp) {
+          if (resp.code === 0) {
+            dom.mockStat = resp.data.value
+          } else {
+            dom.notf.notifyError(i18n.getMsg('mockStatFail'))
+          }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
+        }
+      }
+      request(this, opt)
+    },
     turnMock () {
-      console.log(this.mockStat)
+      let opt = {
+        url: '/mock/conf',
+        method: 'get',
+        dataType: 'form',
+        params: { method: 'updateMockStatus', value: this.mockStat },
+        success (dom, resp) {
+          if (resp.code !== 0) {
+            dom.notf.notifyError(i18n.getMsg('updateMockStatFail'))
+            dom.mockStat = dom.mockStat === 1 ? 0 : 1
+          }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
+          dom.mockStat = dom.mockStat === 1 ? 0 : 1
+        }
+      }
+      request(this, opt)
     }
   }
 }

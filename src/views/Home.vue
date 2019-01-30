@@ -9,20 +9,22 @@
               <el-menu :style="elNavStyle">
                 <el-menu-item v-for="(item, index) in projectList" :key="item.id" :index="item.id">
                   <template slot="title">
-                    <span @mouseenter="navZoom('project', item)" style="display:block" :class="highlightClass('project' + item.id)">
-                      <el-row>
-                        <el-col :span="20">
-                          <el-input v-model="projectEditing.mockProjectName" v-if="projectEditing.id==item.id" autosize type="textarea" :id="'project'+item.id" style="vertical-align: middle;"/>
-                          <p class="longtext" v-if="projectEditing.id!=item.id" @click="projectSelect(item)" :id="'project'+item.id">{{item.mockProjectName}}</p>
-                        </el-col>
-                        <el-col :span="4" align="right" v-if="hoverNav=='project' + item.id">
-                          <font-awesome-icon class="action_icon" icon="edit" v-if="projectEditing.id!=item.id" @click="editProject(item)" style="color: DeepSkyBlue"/>
-                          <font-awesome-icon class="action_icon" icon="trash-alt" v-if="projectEditing.id!=item.id" style="color: LightCoral"/>
-                          <font-awesome-icon class="action_icon" icon="save" v-if="projectEditing.id==item.id" @click="saveProject(item, index)" style="color: DeepSkyBlue"/>
-                          <font-awesome-icon class="action_icon" icon="undo-alt" v-if="projectEditing.id==item.id" style="color: LightCoral" @click="cancelEdit"/>
-                        </el-col>
-                      </el-row>
-                    </span>
+                    <transition name="el-zoom-in-center">
+                      <span @mouseenter="navZoom('project', item)" style="display:block" :class="highlightClass('project' + item.id)" v-show="deletingId!='project'+item.id">
+                        <el-row>
+                          <el-col :span="20">
+                            <el-input v-model="projectEditing.mockProjectName" v-if="projectEditing.id==item.id" autosize type="textarea" :id="'project'+item.id" style="vertical-align: middle;"/>
+                            <p class="longtext" v-if="projectEditing.id!=item.id" @click="projectSelect(item)" :id="'project'+item.id">{{item.mockProjectName}}</p>
+                          </el-col>
+                          <el-col :span="4" align="right" v-if="hoverNav=='project' + item.id">
+                            <font-awesome-icon class="action_icon" icon="edit" v-if="projectEditing.id!=item.id" @click="editProject(item)" style="color: DeepSkyBlue"/>
+                            <font-awesome-icon class="action_icon" icon="trash-alt" v-if="projectEditing.id!=item.id" style="color: LightCoral" @click="deleteItem('project', item.id)"/>
+                            <font-awesome-icon class="action_icon" icon="save" v-if="projectEditing.id==item.id" @click="saveProject(item, index)" style="color: DeepSkyBlue"/>
+                            <font-awesome-icon class="action_icon" icon="undo-alt" v-if="projectEditing.id==item.id" style="color: LightCoral" @click="cancelEdit"/>
+                          </el-col>
+                        </el-row>
+                      </span>
+                    </transition>
                   </template>
                 </el-menu-item>
               </el-menu>
@@ -34,34 +36,36 @@
               <el-menu :style="elNavStyle">
                 <el-menu-item v-for="(item, index) in uriList" :key="item.id" :index="item.id">
                   <template slot="title">
-                    <span @mouseenter="navZoom('uri', item)" style="display:block" :class="highlightClass('uri' + item.id)">
-                      <el-row style="display:block" :gutter="10">
-                        <el-col :span="uriEditing.id!=item.id?13:8">
-                          <el-input :title="$t('message.name')" type="textarea" resize="none" :autosize="{ minRows: 1, maxRows: 1}" :id="'uri'+item.id"
-                            v-model="uriEditing.mockUriName" v-if="uriEditing.id==item.id" style="vertical-align: middle;" />
-                          <el-tooltip :content="'Uri:'+item.mockUri" placement="left" :hide-after="2000" v-if="uriEditing.id!=item.id">
-                            <p class="longtext" @click="uriSelect(item)" :id="'uri'+item.id">{{item.mockUriName}}</p>
-                          </el-tooltip>
-                        </el-col>
-                        <el-col :span="3" align="right" style="min-width:40px;">
-                          <el-tag size="mini" type="success" v-if="uriEditing.id!=item.id">{{item.mockMethod}}</el-tag>
-                          <el-input :title="$t('message.method')" type="textarea" resize="none" :autosize="{ minRows: 1, maxRows: 1}" v-model="uriEditing.mockMethod" v-if="uriEditing.id==item.id" style="vertical-align: middle;"/>
-                        </el-col>
-                        <el-col :span="4" align="right" v-if="uriEditing.id!=item.id">
-                          <el-switch v-model="item.isRun" active-color="#13ce66" inactive-color="#ff4949"
-                            active-value="RUN" inactive-value="STOP" @change="turnUri(item.id, item.isRun)"/>
-                        </el-col>
-                        <el-col :span="8" v-if="uriEditing.id==item.id">
-                          <el-input title="Uri" type="textarea" resize="none" :autosize="{ minRows: 1, maxRows: 1}" v-model="uriEditing.mockUri" style="vertical-align: middle;"/>
-                        </el-col>
-                        <el-col :span="4" align="right" v-if="hoverNav=='uri' + item.id">
-                          <font-awesome-icon class="action_icon" icon="edit" v-if="uriEditing.id!=item.id" @click="editUri(item)" style="color: DeepSkyBlue"/>
-                          <font-awesome-icon class="action_icon" icon="trash-alt" v-if="uriEditing.id!=item.id" style="color: LightCoral"/>
-                          <font-awesome-icon class="action_icon" icon="save" v-if="uriEditing.id==item.id" @click="saveUri(item, index)" style="color: DeepSkyBlue"/>
-                          <font-awesome-icon class="action_icon" icon="undo-alt" v-if="uriEditing.id==item.id" style="color: LightCoral" @click="cancelEdit"/>
-                        </el-col>
-                      </el-row>
-                    </span>
+                    <transition name="el-zoom-in-center">
+                      <span @mouseenter="navZoom('uri', item)" style="display:block" :class="highlightClass('uri' + item.id)" v-show="deletingId!='uri'+item.id">
+                        <el-row style="display:block" :gutter="10">
+                          <el-col :span="uriEditing.id!=item.id?13:8">
+                            <el-input :title="$t('message.name')" type="textarea" resize="none" :autosize="{ minRows: 1, maxRows: 1}" :id="'uri'+item.id"
+                              v-model="uriEditing.mockUriName" v-if="uriEditing.id==item.id" style="vertical-align: middle;" />
+                            <el-tooltip :content="'Uri:'+item.mockUri" placement="left" :hide-after="2000" v-if="uriEditing.id!=item.id">
+                              <p class="longtext" @click="uriSelect(item)" :id="'uri'+item.id">{{item.mockUriName}}</p>
+                            </el-tooltip>
+                          </el-col>
+                          <el-col :span="3" align="right" style="min-width:40px;">
+                            <el-tag size="mini" type="success" v-if="uriEditing.id!=item.id">{{item.mockMethod}}</el-tag>
+                            <el-input :title="$t('message.method')" type="textarea" resize="none" :autosize="{ minRows: 1, maxRows: 1}" v-model="uriEditing.mockMethod" v-if="uriEditing.id==item.id" style="vertical-align: middle;"/>
+                          </el-col>
+                          <el-col :span="4" align="right" v-if="uriEditing.id!=item.id">
+                            <el-switch v-model="item.isRun" active-color="#13ce66" inactive-color="#ff4949"
+                              :active-value="1" :inactive-value="0" @change="turnUri(item.id, item.isRun)"/>
+                          </el-col>
+                          <el-col :span="8" v-if="uriEditing.id==item.id">
+                            <el-input title="Uri" type="textarea" resize="none" :autosize="{ minRows: 1, maxRows: 1}" v-model="uriEditing.mockUri" style="vertical-align: middle;"/>
+                          </el-col>
+                          <el-col :span="4" align="right" v-if="hoverNav=='uri' + item.id">
+                            <font-awesome-icon class="action_icon" icon="edit" v-if="uriEditing.id!=item.id" @click="editUri(item)" style="color: DeepSkyBlue"/>
+                            <font-awesome-icon class="action_icon" icon="trash-alt" v-if="uriEditing.id!=item.id" style="color: LightCoral" @click="deleteItem('uri', item.id)"/>
+                            <font-awesome-icon class="action_icon" icon="save" v-if="uriEditing.id==item.id" @click="saveUri(item, index)" style="color: DeepSkyBlue"/>
+                            <font-awesome-icon class="action_icon" icon="undo-alt" v-if="uriEditing.id==item.id" style="color: LightCoral" @click="cancelEdit"/>
+                          </el-col>
+                        </el-row>
+                      </span>
+                    </transition>
                   </template>
                 </el-menu-item>
               </el-menu>
@@ -73,7 +77,8 @@
               <el-table :data="strategyList" :height="browser.height-130" >
                 <el-table-column type="expand">
                   <template slot-scope="props">
-                    <div :class="highlightClass('strategy' + props.row.id)">
+                    <transition name="el-zoom-in-center">
+                    <div :class="highlightClass('strategy' + props.row.id)" v-show="deletingId!='strategy'+props.row.id">
                       <el-row>
                         <el-col :span="4" :offset="20" v-if="strategyEditing.id!=props.row.id" >
                           <el-button style="transition: 2s;" type="text" align="right" @click="editStrategy(props.row)">{{$t('message.edit')}}</el-button>
@@ -85,20 +90,23 @@
                       </el-row>
                       <strategy-detail :inputmode="strategyEditing.id==props.row.id" :strategy.sync="strategyEditing.id==props.row.id?strategyEditing:props.row"/>
                     </div>
+                    </transition>
                   </template>
                 </el-table-column>
                 <el-table-column
                   :label="$t('message.strategyName')">
                   <template slot-scope="props">
-                    <span @mouseenter="navZoom('strategy', props.row)" @mouseleave="hoverNav=''" style="display:block">
+                    <transition name="el-zoom-in-center">
+                    <span @mouseenter="navZoom('strategy', props.row)" @mouseleave="hoverNav=''" style="display:block" :class="highlightClass('strategy' + props.row.id)" v-show="deletingId!='strategy'+props.row.id">
                       {{props.row.mockRequestName}}
-                      <font-awesome-icon class="action_icon" icon="trash-alt" v-if="hoverNav=='strategy'+props.row.id" style="color: LightCoral"/>
+                      <font-awesome-icon class="action_icon" icon="trash-alt" v-if="hoverNav=='strategy'+props.row.id" style="color: LightCoral" @click="deleteItem('strategy', props.row.id)"/>
                     </span>
+                    </transition>
                   </template>
                 </el-table-column>
                 <el-table-column :label="$t('message.stat')">
                   <template slot-scope="props">
-                    <el-switch class="fswi" v-if="strategyEditing.id!=props.row.id" v-model="props.row.isRun" active-color="#13ce66" inactive-color="#ff4949" active-value="RUN" inactive-value="STOP"/>
+                    <el-switch class="fswi" v-if="strategyEditing.id!=props.row.id" v-model="props.row.isRun" active-color="#13ce66" inactive-color="#ff4949" :active-value="1" :inactive-value="0"/>
                   </template>
                 </el-table-column>
               </el-table>
@@ -222,9 +230,11 @@
 
 <script>
 import tool from '../util/Tool'
-import {confirm, Notification} from '../util/PageAct'
+import { confirm, Notification } from '../util/PageAct'
 import i18n from '../i18n/I18nString'
 import StrategyDetail from '../components/StrategyDetail'
+import { request } from '../util/Request'
+import { setTimeout } from 'timers';
 
 export default {
   name: 'home',
@@ -233,6 +243,7 @@ export default {
   },
   data () {
     return {
+      notf: new Notification(this),
       projectList: [],
       uriList: [],
       strategyList: [],
@@ -261,6 +272,7 @@ export default {
       uriEditing: '',
       strategyCreating: '',
       strategyEditing: '',
+      deletingId: '',
       browser: {
         width: 0,
         height: 0
@@ -294,7 +306,7 @@ export default {
     },
     scrollStyle () {
       return {
-        height: this.browser.height - 130 + 'px',
+        height: this.browser.height - 130 + 'px'
       }
     },
     strategySpan () {
@@ -303,8 +315,6 @@ export default {
   },
   mounted () {
     this.refreshProjectList()
-    this.refreshUriList()
-    this.refreshStrategyList()
   },
   created () {
     window.addEventListener('resize', this.handleResize)
@@ -314,44 +324,109 @@ export default {
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
-    S4 () {
-      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
-    },
-    guid () {
-      return (this.S4() + this.S4() + '-' + this.S4() + '-' + this.S4() + '-' + this.S4() + this.S4())
-    },
     refreshProjectList () {
-      this.projectList = []
-      for (let i = 0; i < 20; i++) {
-        this.projectList.push({ 'id': this.guid() + i, 'mockProjectName': 'examplexxxxxxxxxxxxxxxxxxxxxxxxx' + i, 'idex': 3, 'createTime': '2018-08-27 18:08:54.0', 'updateTime': '2018-08-29 15:08:47.0' })
+      // this.projectList = []
+      let opt = {
+        url: '/mock/project',
+        method: 'get',
+        dataType: 'form',
+        success (dom, resp) {
+          if (resp.code === 0) {
+            dom.projectList = resp.data
+          } else {
+            dom.notf.notifyError(i18n.getMsg('getProjectFail'))
+          }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
+        }
       }
+      request(this, opt)
     },
-    refreshUriList () {
-      this.uriList = []
-      for (let i = 0; i < 20; i++) {
-        this.uriList.push({ 'id': this.guid() + i, 'mockProjectId': 'cf94172d-40d6-4ddf-815e-a232bbb058d2', 'mockUriName': 'xxxxxxxxxxxxxxxxxxxxxxxx/pay/unifiedorder' + i, 'mockUri': '/pay/unifiedorder', 'mockMethod': 'post', 'isRun': 'RUN', 'idex': 5, 'createTime': '2018-08-27 18:16:31.0', 'updateTime': '2018-08-27 18:16:31.0' })
+    getUriList () {
+      let opt = {
+        url: '/mock/uri/project/' + this.projectSelected.id,
+        method: 'get',
+        dataType: 'form',
+        success (dom, resp) {
+          if (resp.code === 0) {
+            dom.uriList = resp.data
+          } else {
+            dom.notf.notifyError(i18n.getMsg('getUriFail'))
+          }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
+        }
       }
+      request(this, opt)
     },
-    refreshStrategyList () {
-      this.strategyList = []
-      for (let i = 0; i < 20; i++) {
-        this.strategyList.push({ 'id': this.guid() + i, 'mockUriId': 'f6469f44-538c-4c11-974a-02cf607a7de5', 'mockRequestName': 'test' + i, 'requestWait': 0, 'verifyExpect': 'function exec(obj) {\n    if (obj.header.flag == "1") {\n        return "SUCCESS";\n    } else if (obj.header.flag == "2") {\n        return "NOAUTH";\n    }\n}', 'responseExpect': "function SUCCESS(obj) {\n    obj = JSON.parse(obj);\n    var resbody = {\n        'return_code': 'SUCCESS',\n        'return_msg': 'OK',\n        'appid': obj.content.appid,\n        'mch_id': obj.content.mch_id,\n        'nonce_str': randomString(),\n        'result_code': 'SUCCESS',\n        'prepay_id': obj.content.out_trade_no,\n        'trade_type': 'APP',\n        'sign': \"${wxsign}\"\n    };\n    var resData = {\n        type: \"xml\",\n        status: \"200\",\n        content: resbody,\n        var_: [{\n            name: \"wxsign\",\n            method: \"wxSign\",\n            value: JSON.stringify(resbody)\n        }],\n        callback: callbk(obj)\n    };\n    var data = JSON.stringify(resData);\n    return data;\n}\n\nfunction randomString(len) {　　\n    len = len || 32;　　\n    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';　　\n    var maxPos = chars.length;　　\n    var pwd = '';　　\n    for (i = 0; i < len; i++) {　　　　\n        pwd += chars.charAt(Math.floor(Math.random() * maxPos));　　\n    }　　\n    return pwd;\n}\n\nfunction callbk(obj) {\n    var callbkbody = {\n        'appid': obj.content.appid,\n        'attach': obj.content.attach,\n        'cash_fee': obj.content.total_fee,\n        'device_info': obj.content.device_info,\n        'mch_id': obj.content.mch_id,\n        'out_trade_no': obj.content.out_trade_no,\n        'total_fee': obj.content.total_fee,\n        'trade_type': obj.content.trade_type,\n        'result_code': \"SUCCESS\",\n        'return_code': \"SUCCESS\",\n        'nonce_str': randomString(),\n        'time_end': new Date().getTime().toString(),\n        'bank_type': 'CFT',\n        'transaction_id': obj.content.reference + '0000',\n        'fee_type': 'CNY',\n        'is_subscribe': 'N',\n        'sign': \"${wxsign}\"\n    }\n    var req = {\n        url: \"http://localhost:8180/testxmlsign\",\n        method: \"post\",\n        datatype: \"xml\",\n        delay: 5000,\n        content: callbkbody,\n        var_: [{\n            name: \"wxsign\",\n            method: \"wxSign\",\n            value: JSON.stringify(callbkbody)\n        }]\n    }\n    return req;\n}", 'isRun': 'RUN', 'remark': null, 'orderNum': 0, 'idex': 4, 'createTime': '2018-08-27 18:17:08.0', 'updateTime': '2018-08-27 18:17:08.0' })
+    getStrategyList () {
+      let opt = {
+        url: '/mock/request/uri/' + this.uriSelected.id,
+        method: 'get',
+        dataType: 'form',
+        success (dom, resp) {
+          if (resp.code === 0) {
+            dom.strategyList = resp.data
+          } else {
+            dom.notf.notifyError(i18n.getMsg('getStrategyFail'))
+          }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
+        }
       }
+      request(this, opt)
     },
     addProject () {
-      this.projectCreating = {
-        mockProjectName: ''
+      var callback = {
+        confirm (dom, ext) {
+          dom.cancelEdit()
+          dom.projectCreating = {
+            mockProjectName: ''
+          }
+          dom.projectDialogVis = true
+        },
+        cancel (dom, ext) {
+          dom.focusInput()
+          dom.highlightNav(dom.editingInputId)
+        }
       }
-      this.projectDialogVis = true
+      if (this.isEditing()) {
+        confirm(this, i18n.getMsg('discardOps'), callback)
+      } else {
+        callback.confirm(this)
+      }
     },
     createProject () {
-      this.projectDialogVis = false
+      let opt = {
+        url: '/mock/project',
+        method: 'post',
+        dataType: 'json',
+        params: this.projectCreating,
+        success (dom, resp) {
+          // console.log(resp)
+          if (resp.code === 0) {
+            dom.projectDialogVis = false
+            dom.refreshProjectList()
+            dom.highlightNav('project' + resp.data)
+          } else {
+            dom.notf.notifyError(i18n.getMsg('createProjectFail'))
+          }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
+        }
+      }
+      request(this, opt)
     },
     projectSelect (item) {
       this.uriNavVis = true
       this.strategyNavVis = false
       this.scriptNavVis = false
       this.projectSelected = item
+      this.getUriList()
     },
     addUri () {
       this.uriCreating = {
@@ -363,12 +438,32 @@ export default {
       this.uriDialogVis = true
     },
     createUri () {
-      this.uriDialogVis = false
+      let opt = {
+        url: '/mock/uri',
+        method: 'post',
+        dataType: 'json',
+        params: this.uriCreating,
+        success (dom, resp) {
+          // console.log(resp)
+          if (resp.code === 0) {
+            dom.uriDialogVis = false
+            dom.getUriList()
+            dom.highlightNav('uri' + resp.data)
+          } else {
+            dom.notf.notifyError(i18n.getMsg('createUriFail'))
+          }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
+        }
+      }
+      request(this, opt)
     },
     uriSelect (item) {
       this.strategyNavVis = true
       this.scriptNavVis = false
       this.uriSelected = item
+      this.getStrategyList()
     },
     addStrategy () {
       this.strategyCreating = {
@@ -382,6 +477,26 @@ export default {
     },
     createStrategy () {
       this.strategyDialogVis = false
+      let opt = {
+        url: '/mock/request',
+        method: 'post',
+        dataType: 'json',
+        params: this.strategyCreating,
+        success (dom, resp) {
+          // console.log(resp)
+          if (resp.code === 0) {
+            dom.strategyDialogVis = false
+            dom.getStrategyList()
+            dom.highlightNav('strategy' + resp.data)
+          } else {
+            dom.notf.notifyError(i18n.getMsg('createStrategyFail'))
+          }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
+        }
+      }
+      request(this, opt)
     },
     strategySelected () {
       this.scriptNavVis = true
@@ -441,20 +556,36 @@ export default {
       }
     },
     saveProject (item, index) {
-      if (tool.compareObj(this.projectEditing, item)) {
-        console.log(1111)
-      } else {
-        this.highlightNav('project' + item.id)
-        this.projectList[index] = Object.assign({}, this.projectEditing)
+      let opt = {
+        url: '/mock/project',
+        method: 'put',
+        dataType: 'json',
+        params: this.projectEditing,
+        ext: item,
+        success (dom, resp, ext) {
+          if (resp.code === 0) {
+            dom.refreshProjectList()
+            dom.highlightNav('project' + ext.id)
+            dom.projectEditing = ''
+          } else {
+            dom.notf.notifyError(i18n.getMsg('saveDup'))
+          }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
+        }
       }
-      this.projectEditing = ''
-      // this.refreshProjectList()
+      if (!tool.compareObj(this.projectEditing, item)) {
+        request(this, opt)
+      } else {
+        this.cancelEdit()
+      }
     },
     editUri (item) {
       var callback = {
         confirm (dom, ext) {
           dom.cancelEdit()
-          dom.editingInputId = 'uri'+ext.id
+          dom.editingInputId = 'uri' + ext.id
           dom.uriEditing = Object.assign({}, ext)
         },
         cancel (dom, ext) {
@@ -469,20 +600,38 @@ export default {
       }
     },
     saveUri (item, index) {
-      if (tool.compareObj(this.uriEditing, item)) {
-        console.log(1111)
-      } else {
-        this.highlightNav('uri' + item.id)
-        this.uriList[index] = Object.assign({}, this.uriEditing)
+      let opt = {
+        url: '/mock/uri',
+        method: 'put',
+        dataType: 'json',
+        params: this.uriEditing,
+        ext: item,
+        success (dom, resp, ext) {
+          if (resp.code === 0) {
+            dom.getUriList()
+            dom.highlightNav('uri' + ext.id)
+            dom.uriEditing = ''
+          } else {
+            dom.notf.notifyError(i18n.getMsg('saveDup'))
+          }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
+        }
       }
-      this.uriEditing = ''
+      if (!tool.compareObj(this.uriEditing, item)) {
+        request(this, opt)
+      } else {
+        this.cancelEdit()
+      }
     },
     editStrategy (item) {
+      // console.log(item)
       var callback = {
         confirm (dom, ext) {
           dom.cancelEdit()
-          dom.editingInputId = 'strategy'+ext.id
-          dom.strategyEditing = Object.assign({}, item)
+          dom.editingInputId = 'strategy' + ext.id
+          dom.strategyEditing = Object.assign({}, {}, item)
         },
         cancel (dom, ext) {
           dom.focusInput()
@@ -496,13 +645,102 @@ export default {
       }
     },
     saveStrategy (item) {
-      if (tool.compareObj(this.strategyEditing, item)) {
-        console.log(1111)
-      } else {
-        this.highlightNav('strategy' + item.id)
-        item = Object.assign({}, this.strategyEditing)
+      let se = Object.assign({}, this.strategyEditing)
+      delete se['row']
+      let opt = {
+        url: '/mock/request',
+        method: 'put',
+        dataType: 'json',
+        params: se,
+        ext: item,
+        success (dom, resp, ext) {
+          if (resp.code === 0) {
+            // setTimeout(()=>{
+              dom.getStrategyList()
+              dom.strategyEditing = ''
+            // }, 1000)
+            dom.highlightNav('strategy' + item.id)
+          } else {
+            dom.notf.notifyError(i18n.getMsg('saveDup'))
+          }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
+        }
       }
-      this.strategyEditing = ''
+      
+      if (!tool.compareObj(opt.params, item)) {
+        request(this, opt)
+      } else {
+        this.cancelEdit()
+      }
+    },
+    deleteItem (name, id) {
+      let dom = this
+      let opt = {
+        url: '/mock/',
+        method: 'delete',
+        dataType: 'json',
+        params: {'id': id},
+        error (dom, error) {
+          dom.notf.notifyError(error)
+        }
+      }
+      
+      switch(name) {
+        case 'project':
+          opt.url += 'project'
+          opt['success'] = function (dom, resp) {
+            if (resp.code === 0) {
+              dom.deletingId = 'project' + id
+              setTimeout(() => {
+                dom.refreshProjectList()
+              }, 500)
+              
+            } else {
+              dom.notf.notifyError(resp.msg)
+            }
+          }
+          // request(this, opt)
+          break
+        case 'uri':
+          opt.url += 'uri'
+          opt['success'] = function (dom, resp) {
+            if (resp.code === 0) {
+              dom.deletingId = 'uri' + id
+              setTimeout(() => {
+                dom.getUriList()
+              }, 500)
+            } else {
+              dom.notf.notifyError(resp.msg)
+            }
+          }
+          // request(this, opt)
+          break
+        case 'strategy':
+          opt.url += 'request'
+          opt['success'] = function (dom, resp) {
+            if (resp.code === 0) {
+              dom.deletingId = 'strategy' + id
+              setTimeout(() => {
+                dom.getStrategyList()
+              }, 500)
+            } else {
+              dom.notf.notifyError(resp.msg)
+            }
+          }
+          // request(this, opt)
+          break
+        default:
+          return
+      }
+      let callback = {
+        confirm (dom, ext) {
+          request(dom, opt)
+        }, 
+        cancel () {}
+      }
+      confirm(this, i18n.getMsg('confirmDelete'), callback)
     },
     isEditing () {
       if (this.projectEditing['id'] || this.uriEditing['id'] || this.strategyEditing['id']) {
@@ -516,8 +754,10 @@ export default {
       this.strategyEditing = ''
       this.editingInputId = ''
     },
-    focusInput () {
-      if (document.getElementById(this.editingInputId)) {
+    focusInput (id) {
+      if (id && document.getElementById(id)) {
+        document.getElementById(id).focus()
+      } else if (document.getElementById(this.editingInputId)) {
         document.getElementById(this.editingInputId).focus()
       }
     },

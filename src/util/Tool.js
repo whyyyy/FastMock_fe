@@ -19,10 +19,17 @@ let tool = {
   },
   compareObj (obj1, obj2) {
     if (tool.length(obj1) !== tool.length(obj2)) {
+      // console.log('length failed')
+      // console.log(tool.length(obj1) + ' ' + tool.length(obj2))
       return false
     } else {
       for (let i in obj1) {
-        if (obj1[i] !== obj2[i]) {
+        if (typeof obj1[i] === 'object') {
+          if (!tool.compareObj(obj1[i], obj2[i])) {
+            return false
+          }
+        } else if (obj1[i] !== obj2[i]) {
+          // console.log(obj1[i] + ' ' + obj2[i])
           return false
         }
       }

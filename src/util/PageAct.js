@@ -35,14 +35,14 @@ export class Notification {
         this.curNotification.close()
       }
       dom.$notify.error({
-        title: '错误',
+        title: i18n.getMsg('error'),
         message: msg,
         duration: duration
       })
     }
     this.notifyLoading = function (msg) {
       this.curNotification = dom.$notify.info({
-        title: '消息',
+        title: i18n.getMsg('notice'),
         message: msg,
         duration: 0
       })
@@ -52,7 +52,7 @@ export class Notification {
         this.curNotification.close()
       }
       dom.$notify({
-        title: '成功',
+        title: i18n.getMsg('success'),
         message: msg,
         type: 'success'
       })

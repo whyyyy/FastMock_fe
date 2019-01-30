@@ -1,8 +1,9 @@
 var en = {
   message: {
-    hello: 'good good study, day day up!',
     on: 'On',
     off: 'Off',
+    error: 'Error',
+    success: 'Success',
     project: 'Project',
     add: 'Add',
     edit: 'Edit',
@@ -20,7 +21,17 @@ var en = {
     notice: 'Notice',
     yes: 'Yes',
     no: 'No',
-    discardOps: 'Discard the current changes?'
+    discardOps: 'Discard the current changes?',
+    mockStatFail: 'Get mock status failed',
+    updateMockStatFail: 'Update mock status failed',
+    getProjectFail: 'Get project failed',
+    getUriFail: 'Get uri failed',
+    getStrategyFail: 'Get strategy failed',
+    createProjectFail: 'Create project failed',
+    createUriFail: 'Create uri failed',
+    createStrategyFail: 'Create strategy failed',
+    saveDup: 'This item have been modified, please save your work, refresh the list and try again',
+    confirmDelete: 'Confirm delete?'
   }
 }
 
