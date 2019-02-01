@@ -106,7 +106,7 @@
                 </el-table-column>
                 <el-table-column :label="$t('message.stat')">
                   <template slot-scope="props">
-                    <el-switch class="fswi" v-if="strategyEditing.id!=props.row.id" v-model="props.row.isRun" active-color="#13ce66" inactive-color="#ff4949" :active-value="1" :inactive-value="0"/>
+                    <el-switch class="fswi" v-if="strategyEditing.id!=props.row.id" v-model="props.row.isRun" active-color="#13ce66" inactive-color="#ff4949" :active-value="1" :inactive-value="0"  @change="turnStrategy(props.row.id, props.row.isRun)"/>
                   </template>
                 </el-table-column>
               </el-table>
@@ -234,7 +234,7 @@ import { confirm, Notification } from '../util/PageAct'
 import i18n from '../i18n/I18nString'
 import StrategyDetail from '../components/StrategyDetail'
 import { request } from '../util/Request'
-import { setTimeout } from 'timers';
+import { setTimeout } from 'timers'
 
 export default {
   name: 'home',
@@ -384,7 +384,7 @@ export default {
         confirm (dom, ext) {
           dom.cancelEdit()
           dom.projectCreating = {
-            mockProjectName: ''
+            mockProjectName: undefined
           }
           dom.projectDialogVis = true
         },
@@ -400,6 +400,10 @@ export default {
       }
     },
     createProject () {
+      if (!this.checkProject(this.projectCreating)) {
+        this.notf.notifyError(i18n.getMsg('infoIncomplete'))
+        return
+      }
       let opt = {
         url: '/mock/project',
         method: 'post',
@@ -430,14 +434,19 @@ export default {
     },
     addUri () {
       this.uriCreating = {
-        mockUriName: '',
-        mockUri: '',
-        mockMethod: '',
-        mockProjectId: this.projectSelected.id
+        mockUriName: undefined,
+        mockUri: undefined,
+        mockMethod: undefined,
+        mockProjectId: this.projectSelected.id,
+        isRun: 1
       }
       this.uriDialogVis = true
     },
     createUri () {
+      if (!this.checkUri(this.uriCreating)) {
+        this.notf.notifyError(i18n.getMsg('infoIncomplete'))
+        return
+      }
       let opt = {
         url: '/mock/uri',
         method: 'post',
@@ -467,15 +476,21 @@ export default {
     },
     addStrategy () {
       this.strategyCreating = {
-        mockRequestName: '',
+        mockRequestName: undefined,
         requestWait: 0,
         verifyExpect: tool.formatJs('function exec(obj){return \'xxx\';}'),
         responseExpect: tool.formatJs('function exec(obj){var obj=JSON.parse(obj);var resData={status:200,type:\'json\',content:{obj:obj}};return JSON.stringify(resData);}'),
-        mockUriId: this.uriSelected.id
+        mockUriId: this.uriSelected.id,
+        isRun: 1,
+        orderNum: 0
       }
       this.strategyDialogVis = true
     },
     createStrategy () {
+      if (!this.checkStrategy(this.strategyCreating)) {
+        this.notf.notifyError(i18n.getMsg('infoIncomplete'))
+        return
+      }
       this.strategyDialogVis = false
       let opt = {
         url: '/mock/request',
@@ -556,6 +571,10 @@ export default {
       }
     },
     saveProject (item, index) {
+      if (!this.checkProject(this.projectEditing)) {
+        this.notf.notifyError(i18n.getMsg('infoIncomplete'))
+        return
+      }
       let opt = {
         url: '/mock/project',
         method: 'put',
@@ -600,6 +619,10 @@ export default {
       }
     },
     saveUri (item, index) {
+      if (!this.checkUri(this.uriEditing)) {
+        this.notf.notifyError(i18n.getMsg('infoIncomplete'))
+        return
+      }
       let opt = {
         url: '/mock/uri',
         method: 'put',
@@ -645,6 +668,10 @@ export default {
       }
     },
     saveStrategy (item) {
+      if (!this.checkStrategy(this.strategyEditing)) {
+        this.notf.notifyError(i18n.getMsg('infoIncomplete'))
+        return
+      }
       let se = Object.assign({}, this.strategyEditing)
       delete se['row']
       let opt = {
@@ -656,8 +683,8 @@ export default {
         success (dom, resp, ext) {
           if (resp.code === 0) {
             // setTimeout(()=>{
-              dom.getStrategyList()
-              dom.strategyEditing = ''
+            dom.getStrategyList()
+            dom.strategyEditing = ''
             // }, 1000)
             dom.highlightNav('strategy' + item.id)
           } else {
@@ -668,7 +695,6 @@ export default {
           dom.notf.notifyError(error)
         }
       }
-      
       if (!tool.compareObj(opt.params, item)) {
         request(this, opt)
       } else {
@@ -676,18 +702,16 @@ export default {
       }
     },
     deleteItem (name, id) {
-      let dom = this
       let opt = {
         url: '/mock/',
         method: 'delete',
         dataType: 'json',
-        params: {'id': id},
+        params: { 'id': id },
         error (dom, error) {
           dom.notf.notifyError(error)
         }
       }
-      
-      switch(name) {
+      switch (name) {
         case 'project':
           opt.url += 'project'
           opt['success'] = function (dom, resp) {
@@ -696,7 +720,6 @@ export default {
               setTimeout(() => {
                 dom.refreshProjectList()
               }, 500)
-              
             } else {
               dom.notf.notifyError(resp.msg)
             }
@@ -737,10 +760,19 @@ export default {
       let callback = {
         confirm (dom, ext) {
           request(dom, opt)
-        }, 
+        },
         cancel () {}
       }
       confirm(this, i18n.getMsg('confirmDelete'), callback)
+    },
+    checkProject (item) {
+      return item.mockProjectName && true
+    },
+    checkUri (item) {
+      return item.mockProjectId && item.mockUriName && item.mockUri && item.mockMethod
+    },
+    checkStrategy (item) {
+      return item.mockUriId && item.mockRequestName && item.verifyExpect && item.responseExpect
     },
     isEditing () {
       if (this.projectEditing['id'] || this.uriEditing['id'] || this.strategyEditing['id']) {
@@ -762,8 +794,42 @@ export default {
       }
     },
     turnUri (id, stat) {
-      console.log(id)
-      console.log(stat)
+      let opt = {
+        url: '/mock/uri',
+        method: 'put',
+        dataType: 'json',
+        params: { id: id, isRun: stat },
+        success (dom, resp, ext) {
+          if (resp.code === 0) {
+            dom.getUriList()
+          } else {
+            dom.notf.notifyError(resp.msg)
+          }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
+        }
+      }
+      request(this, opt)
+    },
+    turnStrategy (id, stat) {
+      let opt = {
+        url: '/mock/request',
+        method: 'put',
+        dataType: 'json',
+        params: { id: id, isRun: stat },
+        success (dom, resp, ext) {
+          if (resp.code === 0) {
+            dom.getStrategyList()
+          } else {
+            dom.notf.notifyError(resp.msg)
+          }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
+        }
+      }
+      request(this, opt)
     },
     handleResize () {
       this.browser.width = window.innerWidth

@@ -31,7 +31,8 @@ var zh = {
     createUriFail: '创建uri失败',
     createStrategyFail: '创建策略失败',
     saveDup: '该数据已被改变，请保存工作，刷新列表后再次尝试',
-    confirmDelete: '确认删除？'
+    confirmDelete: '确认删除？',
+    infoIncomplete: '信息填写不完全'
   }
 }
 

@@ -29,25 +29,25 @@
 import Tool from '../util/Tool'
 
 export default {
-    name: 'StrategyDetail',
-    props: ['inputmode', 'strategy'],
-    data () {
-        return {
-            strategyClone: ''
-        }
-    },
-    created () {
-        this.strategyClone = this.strategy
-    },
-    watch: {
-        strategy () {
-            this.$emit('update:strategy', this.strategy)
-        }
-    },
-    methods: {
-        formatJs (code) {
-            return Tool.formatJs(code)
-        }
+  name: 'StrategyDetail',
+  props: ['inputmode', 'strategy'],
+  data () {
+    return {
+      strategyClone: ''
     }
+  },
+  created () {
+    this.strategyClone = this.strategy
+  },
+  watch: {
+    strategy () {
+      this.$emit('update:strategy', this.strategy)
+    }
+  },
+  methods: {
+    formatJs (code) {
+      return Tool.formatJs(code)
+    }
+  }
 }
 </script>

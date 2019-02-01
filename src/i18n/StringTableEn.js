@@ -31,7 +31,8 @@ var en = {
     createUriFail: 'Create uri failed',
     createStrategyFail: 'Create strategy failed',
     saveDup: 'This item have been modified, please save your work, refresh the list and try again',
-    confirmDelete: 'Confirm delete?'
+    confirmDelete: 'Confirm delete?',
+    infoIncomplete: 'All item should be filled'
   }
 }
 
