@@ -164,6 +164,10 @@
         <el-button type="primary" @click="createStrategy">{{$t('message.save')}}</el-button>
       </span>
     </el-dialog>
+    <div v-if="!testFlag" class="container" style="position: fixed; bottom: 0px; right: 0px; width: 80px; height: 70px; overflow: hidden; visibility: visible; z-index: 2147483639; background: transparent; border: 0px; transition: transform 0.2s ease-in-out 0s; backface-visibility: hidden; opacity: 1; transform: translateY(0%);">
+      <img src="../assets/img/test.png" alt="test" @click="testFlag=true"/>
+    </div>
+    <mock-test :visible.sync="testFlag" />
   </div>
 </template>
 <style>
@@ -233,13 +237,15 @@ import tool from '../util/Tool'
 import { confirm, Notification } from '../util/PageAct'
 import i18n from '../i18n/I18nString'
 import StrategyDetail from '../components/StrategyDetail'
+import MockTest from '../components/MockTest'
 import { request } from '../util/Request'
 import { setTimeout } from 'timers'
 
 export default {
   name: 'home',
   components: {
-    StrategyDetail
+    StrategyDetail,
+    MockTest
   },
   data () {
     return {
@@ -259,6 +265,7 @@ export default {
       projectDialogVis: false,
       uriDialogVis: false,
       strategyDialogVis: false,
+      testFlag: false,
       navSpan: {
         project: 5,
         uri: 7,
@@ -800,14 +807,14 @@ export default {
         dataType: 'json',
         params: { id: id, isRun: stat },
         success (dom, resp, ext) {
-          if (resp.code === 0) {
-            dom.getUriList()
-          } else {
+          if (resp.code !== 0) {
             dom.notf.notifyError(resp.msg)
           }
+          dom.getUriList()
         },
         error (dom, error) {
           dom.notf.notifyError(error)
+          dom.getUriList()
         }
       }
       request(this, opt)
@@ -819,14 +826,14 @@ export default {
         dataType: 'json',
         params: { id: id, isRun: stat },
         success (dom, resp, ext) {
-          if (resp.code === 0) {
-            dom.getStrategyList()
-          } else {
+          if (resp.code !== 0) {
             dom.notf.notifyError(resp.msg)
           }
+          dom.getStrategyList()
         },
         error (dom, error) {
           dom.notf.notifyError(error)
+          dom.getStrategyList()
         }
       }
       request(this, opt)

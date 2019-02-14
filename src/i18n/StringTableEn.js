@@ -21,6 +21,11 @@ var en = {
     notice: 'Notice',
     yes: 'Yes',
     no: 'No',
+    test: 'Test',
+    reqParam: 'Test params',
+    result: 'Result',
+    reqMethod: 'Request method',
+    dataType: 'Data type',
     discardOps: 'Discard the current changes?',
     mockStatFail: 'Get mock status failed',
     updateMockStatFail: 'Update mock status failed',
@@ -32,7 +37,8 @@ var en = {
     createStrategyFail: 'Create strategy failed',
     saveDup: 'This item have been modified, please save your work, refresh the list and try again',
     confirmDelete: 'Confirm delete?',
-    infoIncomplete: 'All item should be filled'
+    infoIncomplete: 'All item should be filled',
+    ins: 'INS'
   }
 }
 

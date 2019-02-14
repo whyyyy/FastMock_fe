@@ -8,6 +8,7 @@ axios.defaults.headers = {
 }
 
 axios.defaults.baseURL = '/localdebug'
+let lang = navigator.language.substr(0, 2)
 
 export function request (dom, opt) {
   if (!opt['method']) {
@@ -23,6 +24,9 @@ export function request (dom, opt) {
   switch (opt['dataType']) {
     case 'json':
       opt['headers']['Content-Type'] = 'application/json;charset=UTF-8'
+      break
+    case 'xml':
+      opt['headers']['Content-Type'] = 'application/xml;charset=UTF-8'
       break
     default:
       opt['headers']['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -40,6 +44,7 @@ function baseRequest (dom, opt) {
     'method': opt['method'],
     'headers': opt['headers']
   }
+  config.headers['lang'] = lang
   if (opt['method'] === 'get') {
     config['params'] = opt['params']
   } else {

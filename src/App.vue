@@ -6,7 +6,10 @@
           <el-col :span="4">
             <p class="h1">FastMock</p>
           </el-col>
-          <el-col :span="2" :offset="18" style="text-align: right">
+          <el-col :span="1" :offset="18">
+            <p class="h1"><a href="#" style="color:#ffff" @click="insOn=true">{{$t('message.ins')}}</a></p>
+          </el-col>
+          <el-col :span="1" style="text-align: right">
             <el-switch class="fswi" v-model="mockStat" active-color="#13ce66" inactive-color="#ff4949" style="margin-top: 16px;"
             :active-value="1" :inactive-value="0" :active-text="$t('message.on')" :inactive-text="$t('message.off')" @change="turnMock"/>
           </el-col>
@@ -16,6 +19,10 @@
         <home class="home"/>
       </el-main>
     </el-container>
+    <el-dialog :title="$t('message.ins')" :visible.sync="insOn">
+      <ins-template-zh v-if="lang==='zh'"/>
+      <ins-template-en v-if="lang!=='zh'"/>
+    </el-dialog>
   </div>
 </template>
 
@@ -57,11 +64,15 @@ import home from './views/Home'
 import { request } from './util/Request'
 import { Notification } from './util/PageAct'
 import i18n from './i18n/I18nString'
+import InsTemplateZh from './template/InsTemplateZh.vue'
+import InsTemplateEn from './template/InsTemplateEn.vue'
 
 export default {
   name: 'app',
   components: {
-    home
+    home,
+    InsTemplateZh,
+    InsTemplateEn
   },
   mounted () {
     this.initMock()
@@ -69,7 +80,9 @@ export default {
   data () {
     return {
       mockStat: 1,
-      notf: new Notification(this)
+      notf: new Notification(this),
+      insOn: false,
+      lang: navigator.language.substr(0, 2)
     }
   },
   methods: {

@@ -21,6 +21,11 @@ var zh = {
     notice: '提示',
     yes: '是',
     no: '否',
+    test: '测试',
+    reqParam: '测试参数',
+    result: '结果',
+    reqMethod: '请求方法',
+    dataType: '数据类型',
     discardOps: '放弃当前操作？',
     mockStatFail: '获取mock状态失败',
     updateMockStatFail: '更新mock状态失败',
@@ -32,7 +37,8 @@ var zh = {
     createStrategyFail: '创建策略失败',
     saveDup: '该数据已被改变，请保存工作，刷新列表后再次尝试',
     confirmDelete: '确认删除？',
-    infoIncomplete: '信息填写不完全'
+    infoIncomplete: '信息填写不完全',
+    ins: '说明'
   }
 }
 
