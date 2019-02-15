@@ -35,66 +35,66 @@
 </template>
 
 <script>
-  import { request } from '../util/Request'
+import { request } from '../util/Request'
 
-  export default {
-    name: 'MockTest',
-    props: ['visible'],
-    data() {
-      return {
-        thisVisible: false,
-        testContent: {
-          uri: '',
-          method: '',
-          dataType: '',
-          params: '{header:{}, param:{}}'
-        },
-        testResult: '',
-        dataTypeLst: [{
-          value: 'json'
-        },{
-          value: 'form'
-        },{
-          value: 'xml'
-        }]
-      }
-    },
-    methods: {
-      updateVisible (show) {
-        this.$emit('update:visible', show)
+export default {
+  name: 'MockTest',
+  props: ['visible'],
+  data () {
+    return {
+      thisVisible: false,
+      testContent: {
+        uri: '',
+        method: '',
+        dataType: '',
+        params: '{header:{}, param:}'
       },
-      startTest () {
-        let testParam = eval('('+ this.testContent.params + ')')
-        testParam.header["mockuri"] = this.testContent.uri
-        let opt = {
-          url: '/mock/test',
-          method: this.testContent.method,
-          dataType: this.testContent.dataType,
-          headers: testParam.header,
-          params: testParam.param,
-          success (dom, resp) {
-            if (resp.code === 0) {
-              dom.testResult = resp.data
-            } else {
-              dom.notf.notifyError(resp.msg)
-            }
-          },
-          error (dom, error) {
-            dom.notf.notifyError(error)
+      testResult: '',
+      dataTypeLst: [{
+        value: 'json'
+      }, {
+        value: 'form'
+      }, {
+        value: 'xml'
+      }]
+    }
+  },
+  methods: {
+    updateVisible (show) {
+      this.$emit('update:visible', show)
+    },
+    startTest () {
+      let testParam = eval('('+ this.testContent.params + ')')
+      testParam.header["mockuri"] = this.testContent.uri
+      let opt = {
+        url: '/mock/test',
+        method: this.testContent.method,
+        dataType: this.testContent.dataType,
+        headers: testParam.header,
+        params: testParam.param,
+        success (dom, resp) {
+          if (resp.code === 0) {
+            dom.testResult = resp.data
+          } else {
+            dom.notf.notifyError(resp.msg)
           }
+        },
+        error (dom, error) {
+          dom.notf.notifyError(error)
         }
-        request(this, opt)
       }
+      request(this, opt)
+    }
+  },
+  watch: {
+    visible () {
+      this.thisVisible=this.visible
     },
-    watch: {
-      visible () {
-        this.thisVisible=this.visible
-      },
-      thisVisible () {
-        if (!this.thisVisible) {
-          this.$emit('update:visible', false)
-        }
+    thisVisible () {
+      if (!this.thisVisible) {
+        this.$emit('update:visible', false)
       }
     }
   }
+}
 </script>

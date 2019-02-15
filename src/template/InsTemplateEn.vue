@@ -109,7 +109,7 @@ function <var
 }
 function <var style="color:#67C23A">callbk(obj)</var> {			                //Mandatory, call back function
     var req = {
-        url: "http://localhost:8180/testxmlsign",	//Mandatory, request url
+        url: "http://localhost:7801/testxmlsign",	//Mandatory, request url
         method: "post",					//Mandatory, request method
         datatype: "xml",				//Mandatory, request datatype
         delay: 5000,					//Optional, delay xxx ms after response
@@ -119,8 +119,6 @@ function <var style="color:#67C23A">callbk(obj)</var> {			                //Mand
 }
 </pre>
     <h3>Test parameter example:</h3>
-    <!-- p>Form</p>
-    <pre class="hljs typescript">{header:{header1:"value1", header2:"value2"}, param:"a=1&b=2"}</pre -->
     <p>Json/Form</p>
     <pre class="hljs typescript">{header:{header1:"value1", header2:"value2"}, param:{a:1,b:2,c:"abc"}}</pre>
     <p>Xml</p>
@@ -129,12 +127,7 @@ function <var style="color:#67C23A">callbk(obj)</var> {			                //Mand
 </template>
 
 <script>
-import hljs from 'highlight.js/lib/highlight'
-
 export default {
-  name: "InsTemplateEn",
-  mounted () {
-      hljs.initHighlightingOnLoad()
-   }
-};
+  name: "InsTemplateEn"
+}
 </script>

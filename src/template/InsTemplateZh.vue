@@ -109,7 +109,7 @@ function <var
 }
 function <var style="color:#67C23A">callbk(obj)</var> {			                //必填，回调函数体
     var req = {
-        url: "http://localhost:8180/testxmlsign",	//必填，回调接口
+        url: "http://localhost:7801/testxmlsign",	//必填，回调接口
         method: "post",					//必填，请求方式
         datatype: "xml",				//必填，请求数据类型
         delay: 5000,					//非必填，回调延迟（ms）
@@ -119,8 +119,6 @@ function <var style="color:#67C23A">callbk(obj)</var> {			                //必�
 }
 </pre>
     <h3>测试入参实例：</h3>
-    <!-- p>Form</p>
-    <pre class="hljs typescript">{header:{header1:"value1", header2:"value2"}, param:"a=1&b=2"}</pre -->
     <p>Json/Form</p>
     <pre class="hljs typescript">{header:{header1:"value1", header2:"value2"}, param:{a:1,b:2,c:"abc"}}</pre>
     <p>Xml</p>
@@ -129,12 +127,7 @@ function <var style="color:#67C23A">callbk(obj)</var> {			                //必�
 </template>
 
 <script>
-import hljs from 'highlight.js/lib/highlight'
-
 export default {
-  name: "InsTemplateZh",
-  mounted () {
-      hljs.initHighlightingOnLoad()
-   }
-};
+  name: "InsTemplateZh"
+}
 </script>

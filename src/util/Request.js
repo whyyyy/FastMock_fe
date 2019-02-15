@@ -7,7 +7,6 @@ axios.defaults.headers = {
   'Accept': 'application/json'
 }
 
-axios.defaults.baseURL = '/localdebug'
 let lang = navigator.language.substr(0, 2)
 
 export function request (dom, opt) {

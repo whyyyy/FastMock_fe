@@ -731,7 +731,6 @@ export default {
               dom.notf.notifyError(resp.msg)
             }
           }
-          // request(this, opt)
           break
         case 'uri':
           opt.url += 'uri'
@@ -745,7 +744,6 @@ export default {
               dom.notf.notifyError(resp.msg)
             }
           }
-          // request(this, opt)
           break
         case 'strategy':
           opt.url += 'request'
@@ -759,7 +757,6 @@ export default {
               dom.notf.notifyError(resp.msg)
             }
           }
-          // request(this, opt)
           break
         default:
           return
