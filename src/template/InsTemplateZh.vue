@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div>
     <h3>入参内容：</h3>
@@ -79,14 +80,14 @@ function noauth(obj) {
 }
 function <var
   style="color:#67C23A"
->randomString(len)</var> {　　
-    len = len || 32;　　
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';　　
-    var maxPos = chars.length;　　
-    var pwd = '';　　
-    for (i = 0; i < len; i++) {　　　　
-        pwd += chars.charAt(Math.floor(Math.random() * maxPos));　　
-    }　　
+>randomString(len)</var> {
+    len = len || 32;
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var maxPos = chars.length;
+    var pwd = '';
+    for (i = 0; i < len; i++) {
+        pwd += chars.charAt(Math.floor(Math.random() * maxPos));
+    }
     return pwd;
 }</pre>
     <p>响应后回调：</p>
@@ -128,6 +129,6 @@ function <var style="color:#67C23A">callbk(obj)</var> {			                //必�
 
 <script>
 export default {
-  name: "InsTemplateZh"
+  name: 'InsTemplateZh'
 }
 </script>

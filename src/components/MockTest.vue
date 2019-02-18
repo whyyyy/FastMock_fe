@@ -1,3 +1,4 @@
+/* eslint no-eval: 0 */
 <template>
     <div>
         <el-dialog :title="$t('message.test')" :visible.sync="thisVisible">
@@ -64,8 +65,8 @@ export default {
       this.$emit('update:visible', show)
     },
     startTest () {
-      let testParam = eval('('+ this.testContent.params + ')')
-      testParam.header["mockuri"] = this.testContent.uri
+      let testParam = eval('(' + this.testContent.params + ')')
+      testParam.header['mockuri'] = this.testContent.uri
       let opt = {
         url: '/mock/test',
         method: this.testContent.method,
@@ -88,7 +89,7 @@ export default {
   },
   watch: {
     visible () {
-      this.thisVisible=this.visible
+      this.thisVisible = this.visible
     },
     thisVisible () {
       if (!this.thisVisible) {
